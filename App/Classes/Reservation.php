@@ -29,6 +29,16 @@ class Reservation
         $this->endDate = $endDate;
     }
 
+
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->$name = $value;
+    }
     public function reserver(): bool
     {
         $pdo = Database::getInstance()->getConnection();
@@ -74,5 +84,5 @@ class Reservation
         $stmt = $pdo->prepare($sql);
         return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
-    
+
 }
