@@ -33,6 +33,32 @@ class Category
         ]);
     }
 
+    public static function addBulkCategory(array $categories): bool
+    {
+        if (empty($categories)) return false;
+
+        $pdo = Database::getInstance()->getConnection();
+        $sql = 'INSERT INTO category(nom, description)
+                VALUES (:nom, :description)';
+
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare($sql);
+
+            foreach ($categories as $category) {
+                $stmt->execute([
+                    ':nom' => $category['nom'],
+                    ':description' => $category['description']
+                ]);
+            }
+            $pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            return false;
+        }
+    }
+
     public function updateCategory(int $id_category, string $nom, string $description)
     {
         $pdo = Database::getInstance()->getConnection();
@@ -46,7 +72,8 @@ class Category
         ]);
     }
 
-    public function deleteCategory(int $id_category): void {
+    public function deleteCategory(int $id_category): void
+    {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'DELETE FROM category WHERE id_category = :idc';
         $stmt = $pdo->prepare($sql);
