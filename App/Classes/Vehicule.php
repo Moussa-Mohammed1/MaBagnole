@@ -52,6 +52,37 @@ class Vehicule
         }
         return false;
     }
+
+    public static function addMultipleCars(array $cars): bool
+    {
+        if (empty($cars)) {
+            return false;
+        }
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "INSERT INTO car (marque, model, prix, image, id_category, description) 
+                VALUES (:marque, :model, :prix, :image, :id_category, :description)";
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare($sql);
+            foreach($cars as $car){
+                $stmt->execute([
+                    ':marque' => $car['marque'],
+                    ':model' => $car['model'],
+                    ':prix' => $car['prix'],
+                    ':image' => $car['image'],
+                    ':id_category' => $car['id_category'],
+                    'description' => $car['description']
+                ]);
+            }
+            $pdo->commit();
+            return true;
+        } catch (PDOException) {
+            $pdo->rollBack();
+            return false;
+        }
+    }
+
+    
     public function searchCarByModel(string $model): array
     {
         $pdo = Database::getInstance()->getConnection();
@@ -87,12 +118,13 @@ class Vehicule
         $stmt = $pdo->prepare($sql);
         return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
-    public function updateCar() : void{
+    public function updateCar(): void
+    {
         $pdo = Database::getInstance()->getConnection();
         $sql = "UPDATE car SET marque = :marque, model = :model, prix = :prix, 
                 image = :image, status = :status, id_category = :id_category, 
                 description = :description WHERE id_car = :id_car";
-        
+
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':marque' => $this->marque,
@@ -106,11 +138,10 @@ class Vehicule
         ]);
     }
 
-    public function deleteCar(int $id_car) : void{
+    public function deleteCar(int $id_car): void
+    {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'DELETE FROM car WHERE id_car = :idc';
         $pdo->prepare($sql)->execute([':idc' => $id_car]);
     }
-
-    
 }
