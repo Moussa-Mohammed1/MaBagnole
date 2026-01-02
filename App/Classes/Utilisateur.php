@@ -42,16 +42,16 @@ class Utilisateur
         return empty($errors) ? false : $errors;
     }
 
-    public function login(): null
+    public static function login($email, $password): null
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'SELECT * FROM utilisateur WHERE email = :email';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':email' => $this->email
+            ':email' => $email
         ]);
         $result = $stmt->fetch(PDO::FETCH_OBJ);
-        if (!empty($result) && password_verify($this->password, $result->password)) {
+        if (!empty($result) && password_verify($password, $result->password)) {
             return $result;
         } else {
             return null;
