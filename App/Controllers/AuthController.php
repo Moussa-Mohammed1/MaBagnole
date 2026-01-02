@@ -23,7 +23,7 @@ if ($action == 'login') {
                 if ($user->role == 'admin') {
                     header('Location: ./../Views/Admin/dashboard.php');
                 } else {
-                    header('Location: ./../Views/Client/home.php');
+                    header('Location: ./../Views/Client/cars.php');
                 }
                 exit();
             } else {
@@ -40,9 +40,7 @@ if ($action == 'login') {
             exit();
         }
     }
-}
-
-elseif ($action == 'register') {
+} elseif ($action == 'register') {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $old = $_POST;
         $nom = trim($_POST['nom']) ?? '';
