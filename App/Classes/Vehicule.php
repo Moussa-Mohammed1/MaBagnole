@@ -114,14 +114,14 @@ class Vehicule
     public static function getCarById(int $id_car): array
     {
         $pdo = Database::getInstance()->getConnection();
-        $sql = 'SELECT c.*, cat.nom FROM car c LEFT JOIN categroy cat ON c.id_category = cat.id_category WHERE id_car = :idc';
+        $sql = 'SELECT c.*, cat.nom FROM car c LEFT JOIN category cat ON c.id_category = cat.id_category WHERE id_car = :idc';
         $stmt = $pdo->prepare($sql);
         return $stmt->execute([':idc' => $id_car]) ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
     public static function getAllCars(): array
     {
         $pdo = Database::getInstance()->getConnection();
-        $sql = 'SELECT c.*, cat.nom FROM car c LEFT JOIN categroy cat ON c.id_category = cat.id_category';
+        $sql = 'SELECT c.*, cat.nom FROM car c LEFT JOIN category cat ON c.id_category = cat.id_category';
         $stmt = $pdo->prepare($sql);
         return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
