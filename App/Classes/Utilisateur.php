@@ -4,6 +4,7 @@ namespace App\Classes;
 
 use App\Config\Database;
 use PDO;
+use stdClass;
 
 class Utilisateur
 {
@@ -30,7 +31,7 @@ class Utilisateur
         $this->$name = $value;
     }
 
-    public static function validateForm(string $nom, string $email): false
+    public static function validateForm(string $nom, string $email): ?array
     {
         $errors = [];
         if (empty($nom) || !preg_match('/^[a-zA-Z\s]+$/', $nom)) {
@@ -39,10 +40,10 @@ class Utilisateur
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Invalid email format';
         }
-        return empty($errors) ? false : $errors;
+        return empty($errors) ? null : $errors;
     }
 
-    public static function login($email, $password): null
+    public static function login($email, $password): ?stdClass
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'SELECT * FROM utilisateur WHERE email = :email';
@@ -61,7 +62,7 @@ class Utilisateur
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'INSERT INTO utilisateur(nom, email, `password`)
-                VALUES (:nom, :email, :`password`)';
+                VALUES (:nom, :email, :password)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':nom' => $this->nom,
