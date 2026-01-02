@@ -1,13 +1,16 @@
 <?php
-require_once __DIR__ . 'Config.php';
+
+namespace App\Config;
+
+use PDO;
+
 class Database
 {
     private static ?Database $instance = null;
     private PDO $connexion;
     private function __construct()
     {
-        $this->connexion = new PDO('mysql:host=' . HOST .
-            'dbname=' . DB_NAME, USER, PASSWORD);
+        $this->connexion = new PDO('mysql:host=' . Config::HOST . ';dbname=' . Config::DB_NAME, Config::USER, Config::PASSWORD);
     }
 
     public static function getInstance(): Database
