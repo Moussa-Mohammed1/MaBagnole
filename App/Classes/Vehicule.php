@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Classes;
+
+use App\Config\Database;
+use PDO;
+
 class Vehicule
 {
     private $id_car;
@@ -64,7 +70,7 @@ class Vehicule
         try {
             $pdo->beginTransaction();
             $stmt = $pdo->prepare($sql);
-            foreach($cars as $car){
+            foreach ($cars as $car) {
                 $stmt->execute([
                     ':marque' => $car['marque'],
                     ':model' => $car['model'],
@@ -82,7 +88,7 @@ class Vehicule
         }
     }
 
-    
+
     public function searchCarByModel(string $model): array
     {
         $pdo = Database::getInstance()->getConnection();

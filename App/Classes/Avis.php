@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Classes;
+
+use App\Config\Database;
+use PDO;
+
 class Avis
 {
     private $id_avis;

@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Classes;
+
+use App\Config\Database;
+use DateTime;
+
 class Reservation
 {
     private $id_reservation;
@@ -82,5 +88,4 @@ class Reservation
         $stmt = $pdo->prepare($sql);
         return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
-
 }

@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Classes;
+
+use App\Config\Database;
+use PDO;
+
 class Utilisateur
 {
     protected $id_user;
@@ -47,12 +53,11 @@ class Utilisateur
         $result = $stmt->fetch(PDO::FETCH_OBJ);
         if (!empty($result) && password_verify($this->password, $result->password)) {
             return $result;
-        }
-        else{
+        } else {
             return null;
         }
     }
-    public function signUp() : void
+    public function signUp(): void
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'INSERT INTO utilisateur(nom, email, `password`)

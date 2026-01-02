@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Classes;
+
+use App\Config\Database;
+use PDO;
+
 class Category
 {
     private $id_category;
