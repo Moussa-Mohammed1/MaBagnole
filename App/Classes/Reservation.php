@@ -42,8 +42,7 @@ class Reservation
     public function reserver(): bool
     {
         $pdo = Database::getInstance()->getConnection();
-        $sql = 'INSERT INTO reservation(id_client, id_car, date_reservation, pickupLocation, retournLocation, startDate, endDate)
-                VALUES (:idcl, :idcr, :dtr, :pl, :rl, :srtd, :endd)';
+        $sql = 'CALL create_reservation(:idcl, :idcr, :dtr, :pl, :rl, :srtd, :endd)';
         $stmt = $pdo->prepare($sql);
 
         if ($stmt->execute([
@@ -55,7 +54,6 @@ class Reservation
             ':srtd' => $this->startDate->format('Y-m-d H:i:s'),
             ':endd' => $this->endDate->format('Y-m-d H:i:s'),
         ])) {
-            $this->id_reservation = $pdo->lastInsertId();
             return true;
         }
         return false;
