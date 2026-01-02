@@ -4,7 +4,7 @@ namespace App\Classes;
 
 use App\Config\Database;
 use PDO;
-
+use PDOException;
 class Category
 {
     private $id_category;

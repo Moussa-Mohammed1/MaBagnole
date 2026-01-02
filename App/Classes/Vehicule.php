@@ -4,6 +4,7 @@ namespace App\Classes;
 
 use App\Config\Database;
 use PDO;
+use PDOException;
 
 class Vehicule
 {
