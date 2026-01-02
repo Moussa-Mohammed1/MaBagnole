@@ -1,3 +1,11 @@
+<?php
+session_start();
+$errors = $_SESSION['errors'] ?? [];
+$error = $_SESSION['error'] ?? '';
+$old = $_SESSION['old'] ?? [];
+
+session_unset();
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -58,7 +66,7 @@
     <!-- Top Navigation Bar -->
     <header class="flex sticky top-0 items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7ecf3] dark:border-b-slate-800 px-4 lg:px-6 py-2 bg-white dark:bg-[#101722] z-20 shrink-0">
         <div class="flex items-center gap-4 text-[#0d131c] dark:text-white">
-            
+
             <h2 class="text-[#0d131c] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">MaBagnole.</h2>
         </div>
         <a href="./login.php" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 text-primary text-sm font-bold leading-normal tracking-[0.015em] transition-colors">
@@ -102,42 +110,54 @@
                     </div>
                 </div>
                 <!-- Form -->
-                <form class="flex flex-col gap-3">
+                <form class="flex flex-col gap-3" action="./../../Controllers/AuthController.php?action=register" method="POST">
                     <!-- Full Name -->
                     <label class="flex flex-col w-full">
                         <p class="text-[#0d131c] dark:text-white text-xs font-medium leading-normal pb-1">Full Name</p>
                         <div class="relative">
-                            <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="e.g. John Doe" type="text" />
+                            <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="e.g. John Doe" type="text" name="nom" value="<?= htmlspecialchars($old['nom'] ?? '') ?>" />
                             <span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-[18px] pointer-events-none">person</span>
                         </div>
+                        <?php if (isset($errors['nom'])): ?>
+                            <p class="text-red-500 text-xs mt-1"><?= $errors['nom'] ?></p>
+                        <?php endif; ?>
                     </label>
                     <!-- Email -->
                     <label class="flex flex-col w-full">
                         <p class="text-[#0d131c] dark:text-white text-xs font-medium leading-normal pb-1">Email Address</p>
                         <div class="relative">
-                            <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="name@example.com" type="email" />
+                            <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="name@example.com" type="email" name="email" value="<?= htmlspecialchars($old['email'] ?? '') ?>" />
                             <span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-[18px] pointer-events-none">mail</span>
                         </div>
+                        <?php if (isset($errors['email'])): ?>
+                            <p class="text-red-500 text-xs mt-1"><?= $errors['email'] ?></p>
+                        <?php endif; ?>
                     </label>
                     <!-- Password Group -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <label class="flex flex-col w-full">
                             <p class="text-[#0d131c] dark:text-white text-xs font-medium leading-normal pb-1">Password</p>
                             <div class="relative group">
-                                <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all pr-9" placeholder="Create password" type="password" />
+                                <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all pr-9" placeholder="Create password" type="password" name="password" />
                                 <button class="absolute right-2 top-2 text-slate-400 hover:text-primary transition-colors cursor-pointer" type="button">
                                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </button>
                             </div>
+                            <?php if (isset($errors['password'])): ?>
+                                <p class="text-red-500 text-xs mt-1"><?= $errors['password'] ?></p>
+                            <?php endif; ?>
                         </label>
                         <label class="flex flex-col w-full">
                             <p class="text-[#0d131c] dark:text-white text-xs font-medium leading-normal pb-1">Confirm Password</p>
                             <div class="relative group">
-                                <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all pr-9" placeholder="Confirm password" type="password" />
+                                <input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfd9e8] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-slate-500 px-3 py-2 text-sm font-normal leading-normal transition-all pr-9" placeholder="Confirm password" type="password" name="confirm_password" />
                                 <button class="absolute right-2 top-2 text-slate-400 hover:text-primary transition-colors cursor-pointer" type="button">
                                     <span class="material-symbols-outlined text-[18px]">visibility_off</span>
                                 </button>
                             </div>
+                            <?php if (isset($errors['confirm_password'])): ?>
+                                <p class="text-red-500 text-xs mt-1"><?= $errors['confirm_password'] ?></p>
+                            <?php endif; ?>
                         </label>
                     </div>
                     <!-- Password Strength Meter (Visual only) -->
@@ -158,7 +178,7 @@
                         </label>
                     </div>
                     <!-- Submit Button -->
-                    <button class="mt-2 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-blue-600 text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg" type="button">
+                    <button class="mt-2 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-blue-600 text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg" type="submit">
                         <span class="truncate">Create Account</span>
                     </button>
                     <!-- Login Link -->
