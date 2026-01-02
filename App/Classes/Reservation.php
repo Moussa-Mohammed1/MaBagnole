@@ -82,11 +82,46 @@ class Reservation
         $stmt->execute([':st' => 'REJECTED', ':idr' => $id_reservation]);
     }
 
-    public static function getAllReservatio(): array
+    public static function getAllReservations(): array
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'SELECT * FROM reservation';
         $stmt = $pdo->prepare($sql);
         return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
     }
+    public static function checkReservation(int $id_client): array
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = 'SELECT 
+                    r.id_reservation,
+                    r.id_client,
+                    r.id_car,
+                    r.date_reservation,
+                    r.pickupLocation,
+                    r.retournLocation,
+                    r.status,
+                    r.startDate,
+                    r.endDate,
+                    c.marque,
+                    c.model,
+                    c.prix,
+                    c.image,
+                    cat.nom as category_name,
+                    a.id_avis,
+                    a.note,
+                    a.texte as review_text,
+                    a.created_at as review_date
+                FROM reservation r
+                LEFT JOIN car c ON r.id_car = c.id_car
+                LEFT JOIN category cat ON c.id_category = cat.id_category
+                LEFT JOIN avis a ON r.id_reservation = a.id_reservation
+                WHERE r.id_client = :id_client
+                ORDER BY r.date_reservation DESC';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id_client' => $id_client]);
+
+        return $stmt->fetchAll(PDO::FETCH_OBJ) ?? null;
+    }
+    
 }
