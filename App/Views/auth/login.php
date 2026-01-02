@@ -1,3 +1,10 @@
+<?php
+session_start();
+$error = $_SESSION['error'] ?? '';
+$old = $_SESSION['old'] ?? [];
+$empty = $_SESSION['empty'] ?? '';
+session_unset();
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -43,16 +50,11 @@
     <!-- Top Navigation -->
     <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#e7ecf3] dark:border-gray-800 bg-white dark:bg-[#1a202c] px-4 lg:px-6 py-2 sticky top-0 z-50 shrink-0">
         <div class="flex items-center gap-3 text-[#0d131c] dark:text-white">
-            
+
             <h2 class="text-base font-bold leading-tight tracking-[-0.015em]">MaBagnole <span class="text-red-500 text-lg">.</span></h2>
         </div>
         <div class="flex flex-1 justify-end gap-8">
-            <div class="hidden md:flex items-center gap-6">
-                <a class="text-xs font-medium leading-normal hover:text-primary transition-colors" href="#">Home</a>
-                <a class="text-xs font-medium leading-normal hover:text-primary transition-colors" href="#">Vehicles</a>
-                <a class="text-xs font-medium leading-normal hover:text-primary transition-colors" href="#">About Us</a>
-                <a class="text-xs font-medium leading-normal hover:text-primary transition-colors" href="#">Contact</a>
-            </div>
+            
             <div class="flex gap-2">
                 <a href="./register.php" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-primary text-white text-xs font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors">
                     <span class="truncate">Sign Up</span>
@@ -80,11 +82,14 @@
                     <p class="text-[#4b6c9b] dark:text-gray-400 text-xs font-normal leading-normal">Please enter your details to access your rentals.</p>
                 </div>
                 <!-- Form -->
-                <form class="flex flex-col gap-3 mt-1">
+                <form class="flex flex-col gap-3 mt-1" action="./../../Controllers/AuthController.php?action=login" method="POST">
                     <!-- Email Field -->
+                    <p class="text-red-500 text-xs"><?= isset($errors) ? $errors : '' ?></p>
+                    <p class="text-red-500 text-xs"><?= isset($empty) ? $empty : '' ?></p>
+
                     <label class="flex flex-col w-full">
                         <p class="text-[#0d131c] dark:text-gray-200 text-xs font-medium leading-normal pb-1">Email Address</p>
-                        <input class="form-input flex w-full resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white dark:bg-[#2d3748] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#cfd9e8] dark:border-gray-600 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-gray-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="name@example.com" type="email" value="" />
+                        <input required class="form-input flex w-full resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white dark:bg-[#2d3748] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#cfd9e8] dark:border-gray-600 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-gray-500 px-3 py-2 text-sm font-normal leading-normal transition-all" placeholder="name@example.com" type="email" value="<?= !empty($old) ? $old['email'] : '' ?>" name="email" />
                     </label>
                     <!-- Password Field -->
                     <label class="flex flex-col w-full">
@@ -92,7 +97,9 @@
                             <p class="text-[#0d131c] dark:text-gray-200 text-xs font-medium leading-normal">Password</p>
                         </div>
                         <div class="flex w-full items-stretch rounded-lg relative">
-                            <input class="form-input flex w-full resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white dark:bg-[#2d3748] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#cfd9e8] dark:border-gray-600 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal leading-normal transition-all" placeholder="Enter your password" type="password" value="" />
+                            <input
+                                class="form-input flex w-full resize-none overflow-hidden rounded-lg text-[#0d131c] dark:text-white dark:bg-[#2d3748] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#cfd9e8] dark:border-gray-600 focus:border-primary h-9 placeholder:text-[#4b6c9b] dark:placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal leading-normal transition-all" placeholder="Enter your password"
+                                type="password" value="" name="password" />
                             <button class="absolute right-0 top-0 bottom-0 px-3 flex items-center justify-center text-[#4b6c9b] hover:text-primary transition-colors cursor-pointer" type="button">
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                             </button>
@@ -114,7 +121,7 @@
                     <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
                 </div>
                 <!-- Social Login -->
-                
+
                 <!-- Footer Sign Up -->
                 <div class="text-center mt-2">
                     <p class="text-[#4b6c9b] dark:text-gray-400 text-xs font-normal">
