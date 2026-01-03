@@ -78,7 +78,7 @@ class Vehicule
                     ':prix' => $car['prix'],
                     ':image' => $car['image'],
                     ':id_category' => $car['id_category'],
-                    'description' => $car['description']
+                    ':description' => $car['description']
                 ]);
             }
             $pdo->commit();
@@ -102,7 +102,7 @@ class Vehicule
         return [];
     }
 
-    public function filterByCategory(string $category): array
+    public static function filterByCategory(string $category): array
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'SELECT c.*, cat.nom FROM car c LEFT JOIN categroy cat ON c.id_category = cat.id_category 
@@ -145,7 +145,7 @@ class Vehicule
         ]);
     }
 
-    public function deleteCar(int $id_car): void
+    public static function deleteCar(int $id_car): void
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'DELETE FROM car WHERE id_car = :idc';
