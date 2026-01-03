@@ -85,4 +85,12 @@ class Category
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':idc' => $id_category]);
     }
+
+    public static function getAllCategories(): array
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = 'SELECT * FROM category ORDER BY nom ASC';
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_OBJ) : [];
+    }
 }
