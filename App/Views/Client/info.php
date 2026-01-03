@@ -249,7 +249,7 @@ $badgeClass = getCategoryBadgeClass($car->nom ?? 'Other');
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 mb-8">
                             <h4 class="text-sm font-bold uppercase text-slate-500 mb-3 tracking-wider">Share your experience</h4>
 
-                            <form id="reviewForm" method="POST" action="submit_review.php">
+                            <form id="reviewForm" method="POST" action="./../../Controllers/AvisController.php">
                                 <input type="hidden" name="car_id" value="<?= htmlspecialchars($car->id_car) ?>">
                                 <input type="hidden" name="rating" id="ratingInput" value="0">
                                 <div class="flex gap-4">
