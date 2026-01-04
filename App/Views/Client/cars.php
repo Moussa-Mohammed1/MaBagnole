@@ -195,20 +195,6 @@ $cars = Vehicule::getAllCars();
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Sidebar Filters -->
             <aside class="w-full lg:w-72 shrink-0 space-y-8">
-                <!-- Filter Group: Price -->
-                <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-slate-900 dark:text-white">Price Range</h3>
-                        <span class="text-xs text-primary font-bold cursor-pointer hover:underline">Reset</span>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
-                            <span>$30</span>
-                            <span class="font-bold text-slate-900 dark:text-white">$120/day</span>
-                        </div>
-                        <input class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary dark:bg-slate-700" max="500" min="30" type="range" value="120" />
-                    </div>
-                </div>
                 <!-- Filter Group: Category -->
                 <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-4">Category</h3>
@@ -235,39 +221,19 @@ $cars = Vehicule::getAllCars();
                         </label>
                     </div>
                 </div>
-                <!-- Filter Group: Features -->
-                <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-4">Features</h3>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Automatic Transmission</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Electric / Hybrid</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">GPS Navigation</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Bluetooth / CarPlay</span>
-                        </label>
-                    </div>
-                </div>
             </aside>
             <!-- Vehicle Grid -->
             <div class="flex-1">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Available Vehicles <span class="text-slate-400 font-normal text-lg ml-2">(<?= count($cars) ?>)</span></h2>
                     <div class="flex items-center gap-2">
-                        <span class="text-sm text-slate-500 hidden sm:inline">Sort by:</span>
-                        <select class="form-select bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium py-2 px-3 focus:ring-primary focus:border-primary">
-                            <option>Recommended</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
+                        <span class="text-sm text-slate-500 hidden sm:inline">Filter by category:</span>
+                        <select id="cattt" class="form-select bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium py-2 px-3 focus:ring-primary focus:border-primary">
+                            <option value="">All Categories</option>
+                            <?php $categories = Category::getAllCategories();
+                            foreach($categories as $cat):?>
+                            <option name="<?= $cat->nom ?>"><?= $cat->nom ?></option>
+                            <?php endforeach;?>
                         </select>
                     </div>
                 </div>
@@ -286,7 +252,6 @@ $cars = Vehicule::getAllCars();
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
                             <?php
-                            // Helper function to get category badge color
                             function getCategoryColor($categoryName)
                             {
                                 $colors = [
@@ -305,7 +270,7 @@ $cars = Vehicule::getAllCars();
                                 foreach ($cars as $car) {
                                     $categoryColor = getCategoryColor($car->nom ?? 'Other');
                             ?>
-                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                    <tr class="hover:bg-slate-50 car dark:hover:bg-slate-700/50 transition-colors">
                                         <td class="px-4 py-3">
                                             <img src="<?= htmlspecialchars($car->image ?? 'https://via.placeholder.com/150') ?>"
                                                 alt="<?= htmlspecialchars($car->marque . ' ' . $car->model) ?>"
@@ -320,7 +285,7 @@ $cars = Vehicule::getAllCars();
                                                 <?= htmlspecialchars($car->description ?? 'No description') ?>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-3">
+                                        <td class="px-4 category py-3">
                                             <span class="px-2 py-1 <?= $categoryColor ?> rounded-md text-xs font-bold">
                                                 <?= htmlspecialchars($car->nom ?? 'N/A') ?>
                                             </span>
@@ -430,23 +395,23 @@ $cars = Vehicule::getAllCars();
 
     <script>
         $(document).ready(function() {
-            $('#carsTable').DataTable({
+            var table = $('#carsTable').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [
                     [5, 10, 25, 50, -1],
                     [5, 10, 25, 50, "All"]
                 ],
                 "order": [
-                    [4, "asc"]
-                ], 
+                    [1, "asc"]
+                ],
                 "columnDefs": [{
                         "orderable": false,
-                        "targets": [0, 5]
-                    }, 
+                        "targets": [0, 3, 5]
+                    },
                     {
                         "searchable": false,
                         "targets": [0, 5]
-                    } 
+                    }
                 ],
                 "language": {
                     "search": "Search vehicles:",
@@ -463,9 +428,13 @@ $cars = Vehicule::getAllCars();
                 },
                 "responsive": true
             });
+
+            $('#cattt').on('change', () => {
+                let selectedCategory = $(this).val();
+                table.column(2).search(selectedCategory).draw();
+            });
         });
 
-        // Function to view car details
         function viewCarDetails(carId) {
             window.location.href = 'info.php?id=' + carId;
         }
