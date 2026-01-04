@@ -66,7 +66,7 @@ class Reservation
         return false;
     }
 
-    public function accepterReservation(int $id_reservation): void
+    public static function accepterReservation(int $id_reservation): void
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'UPDATE reservation SET `status` = :st  WHERE id_reservation = :idr';
@@ -74,7 +74,7 @@ class Reservation
         $stmt->execute([':st' => 'ACCEPTED', ':idr' => $id_reservation]);
     }
 
-    public function refuserReservation(int $id_reservation): void
+    public static function refuserReservation(int $id_reservation): void
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'UPDATE reservation SET `status` = :st  WHERE id_reservation = :idr';
