@@ -110,25 +110,36 @@ $cars = Vehicule::getAllCars();
     <!-- Navigation -->
     <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
         <div class="px-4 md:px-10 py-3 flex items-center justify-between whitespace-nowrap">
-            <div class="flex items-center gap-4 text-slate-900 dark:text-white">
-                <h2 class="text-xl font-bold leading-tight tracking-tight">MaBagnole.</h2>
-            </div>
-            <div class="hidden md:flex flex-1 justify-end gap-8 items-center">
-                <nav class="flex items-center gap-9">
-                    <a class="text-slate-900 dark:text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
-                    <a class="text-primary text-sm font-bold" href="#">Fleet</a>
-                    <a class="text-slate-900 dark:text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Locations</a>
-                </nav>
-                <div class="flex gap-3">
-                    <a href="./../auth/login.php" class="flex cursor-pointer items-center justify-center rounded-lg h-9 px-4 border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold transition-all">
-                        <span class="material-symbols-outlined">logout</span>Log out
-                    </a>
+            <div class="flex items-center gap-8">
+                <a class="flex items-center gap-3 group" href="cars.php">
 
-                </div>
+                    <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">MaBagnole</h2>
+                </a>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-primary text-sm font-bold" href="cars.php">Fleet</a>
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="dashboard.php">My Bookings</a>
+                </nav>
             </div>
-            <!-- Mobile Menu Icon -->
-            <div class="md:hidden text-slate-900 dark:text-white">
-                <span class="material-symbols-outlined">menu</span>
+            <div class="flex items-center gap-4">
+                <?php if (isset($_SESSION['logged'])): ?>
+                    <div class="flex items-center gap-3">
+                        <div class="hidden sm:flex flex-col items-end">
+                            <span class="text-sm font-bold text-slate-900 dark:text-white"><?= htmlspecialchars($_SESSION['logged']->username ?? 'User') ?></span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400"><?= htmlspecialchars($_SESSION['logged']->email ?? '') ?></span>
+                        </div>
+                        <div class="size-10 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold">
+                            <?= strtoupper(substr($_SESSION['logged']->username ?? 'U', 0, 1)) ?>
+                        </div>
+                    </div>
+                    <a href="./../auth/login.php" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                        <span class="hidden sm:inline text-sm font-medium">Logout</span>
+                    </a>
+                <?php else: ?>
+                    <a href="./../auth/login.php" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                        Sign In
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </header>
@@ -194,34 +205,7 @@ $cars = Vehicule::getAllCars();
         </div>
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Sidebar Filters -->
-            <aside class="w-full lg:w-72 shrink-0 space-y-8">
-                <!-- Filter Group: Category -->
-                <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h3 class="font-bold text-slate-900 dark:text-white mb-4">Category</h3>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">SUV</span>
-                            <span class="ml-auto text-xs text-slate-400 font-medium">12</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input checked="" class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Sedan</span>
-                            <span class="ml-auto text-xs text-slate-400 font-medium">24</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Economy</span>
-                            <span class="ml-auto text-xs text-slate-400 font-medium">8</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 dark:checked:bg-primary" type="checkbox" />
-                            <span class="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Luxury</span>
-                            <span class="ml-auto text-xs text-slate-400 font-medium">5</span>
-                        </label>
-                    </div>
-                </div>
-            </aside>
+
             <!-- Vehicle Grid -->
             <div class="flex-1">
                 <div class="flex items-center justify-between mb-6">
@@ -231,9 +215,9 @@ $cars = Vehicule::getAllCars();
                         <select id="cattt" class="form-select bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium py-2 px-3 focus:ring-primary focus:border-primary">
                             <option value="">All Categories</option>
                             <?php $categories = Category::getAllCategories();
-                            foreach($categories as $cat):?>
-                            <option name="<?= $cat->nom ?>"><?= $cat->nom ?></option>
-                            <?php endforeach;?>
+                            foreach ($categories as $cat): ?>
+                                <option name="<?= $cat->nom ?>"><?= $cat->nom ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -245,7 +229,7 @@ $cars = Vehicule::getAllCars();
                                 <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Image</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Vehicle</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Category</th>
-                                <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Features</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Price/Day</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Actions</th>
                             </tr>
@@ -429,7 +413,7 @@ $cars = Vehicule::getAllCars();
                 "responsive": true
             });
 
-            $('#cattt').on('change', () => {
+            $('#cattt').on('change', function() {
                 let selectedCategory = $(this).val();
                 table.column(2).search(selectedCategory).draw();
             });
