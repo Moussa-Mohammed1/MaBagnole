@@ -133,36 +133,29 @@ function getStatusBadge($status)
         <div class="px-4 md:px-10 py-3 flex items-center justify-between whitespace-nowrap">
             <div class="flex items-center gap-8">
                 <!-- Logo -->
-                <a class="flex items-center gap-4 text-[#0d131c] dark:text-white" href="#">
-                    <div class="size-8 text-primary">
-                        <svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
-                        </svg>
-                    </div>
+                <a class="flex items-center gap-4 text-[#0d131c] dark:text-white group" href="cars.php">
                     <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">MaBagnole</h2>
                 </a>
-                <!-- Search Bar -->
-                <label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
-                    <div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-[#e7ecf3] dark:bg-[#2a3441] overflow-hidden">
-                        <div class="text-[#4b6c9b] flex items-center justify-center pl-4 pr-2">
-                            <span class="material-symbols-outlined text-xl">search</span>
-                        </div>
-                        <input class="w-full bg-transparent border-none text-sm text-[#0d131c] dark:text-white placeholder:text-[#4b6c9b] focus:ring-0 px-0" placeholder="Search vehicles..." />
-                    </div>
-                </label>
-            </div>
-            <div class="flex items-center gap-4 md:gap-8">
-                <nav class="hidden lg:flex items-center gap-6">
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Browse Cars</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Locations</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Help</a>
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="cars.php">Fleet</a>
+                    <a class="text-primary text-sm font-bold" href="dashboard.php">My Bookings</a>
                 </nav>
-                <div class="flex gap-3 items-center">
-                    <button class="relative rounded-full size-10 overflow-hidden border border-[#e7ecf3] dark:border-[#2a3441]">
-                        <img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Smiling man face avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAttjauvKpxwrVRBFOYu-MNY-0eV7ZKlep5A72d8F8n9A47hdojpxY0DE2rO2w7l5tS5Hqh7lJE-T7wY6k0iV1bQtySQPKblcRAuowASjLy8QfziARAuV20NMnxMdhiOKNYvhLbeyo6m9GJSnTpf5v0U9uA0yTMv93QLyTGznI__x31O7Ugb3lyXt775eKejmiCOE54-jCmEVfwteTNMPNuOLdoJzEzcu1uoKlaBza6H4PDghuOPO8o8x6U_BEmr-u5WfoVn1F2jlk" />
-                    </button>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex flex-col items-end">
+                        <span class="text-sm font-bold text-slate-900 dark:text-white"><?= htmlspecialchars($_SESSION['logged']->username ?? 'User') ?></span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400"><?= htmlspecialchars($_SESSION['logged']->email ?? '') ?></span>
+                    </div>
+                    <div class="size-10 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold">
+                        <?= strtoupper(substr($_SESSION['logged']->username ?? 'U', 0, 1)) ?>
+                    </div>
                 </div>
+                <a href="../auth/login.php" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                    <span class="hidden sm:inline text-sm font-medium">Logout</span>
+                </a>
             </div>
         </div>
     </header>
