@@ -24,13 +24,11 @@ if ($carId > 0) {
     }
 }
 
-// If car not found, redirect back to home
 if (!$car) {
     header('Location: cars.php');
     exit;
 }
 
-// Helper function for category badge color
 function getCategoryBadgeClass($categoryName)
 {
     $colors = [
@@ -252,6 +250,7 @@ $badgeClass = getCategoryBadgeClass($car->nom ?? 'Other');
                             <form id="reviewForm" method="POST" action="./../../Controllers/AvisController.php">
                                 <input type="hidden" name="car_id" value="<?= htmlspecialchars($car->id_car) ?>">
                                 <input type="hidden" name="rating" id="ratingInput" value="0">
+                                <input type="hidden" name="role_user" value="<?= $logged->role ?>">
                                 <div class="flex gap-4">
                                     <div class="size-10 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 flex items-center justify-center text-slate-500">
                                         <span class="material-symbols-outlined">person</span>
@@ -268,7 +267,6 @@ $badgeClass = getCategoryBadgeClass($car->nom ?? 'Other');
                                             </div>
                                             <button type="submit" class="bg-slate-900 dark:bg-slate-700 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-800">Post Review</button>
                                         </div>
-                                        <p class="text-xs text-slate-400 mt-1 block" id="ratingText">Click stars to rate (Required)</p>
                                     </div>
                                 </div>
                             </form>
@@ -309,30 +307,88 @@ $badgeClass = getCategoryBadgeClass($car->nom ?? 'Other');
                                 }
 
                                 $clientInitial = !empty($review->client_name) ? strtoupper($review->client_name[0]) : 'U';
+                                $isOwnReview = ($review->client_email === $logged->email);
                         ?>
-                                <div class="flex gap-4">
+                                <div class="flex gap-4 relative group" id="review-<?= $review->id_avis ?>">
                                     <div class="size-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-blue-600 shrink-0 flex items-center justify-center text-white font-bold text-lg">
                                         <?= htmlspecialchars($clientInitial) ?>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <h5 class="font-bold text-slate-900 dark:text-white"><?= htmlspecialchars($review->client_name ?? 'Anonymous') ?></h5>
-                                            <?php if ($timeAgo): ?>
-                                                <span class="text-xs text-slate-400">• <?= htmlspecialchars($timeAgo) ?></span>
+                                        <div class="flex items-center justify-between gap-2 mb-1">
+                                            <div class="flex items-center gap-2">
+                                                <h5 class="font-bold text-slate-900 dark:text-white"><?= htmlspecialchars($review->client_name ?? 'Anonymous') ?></h5>
+                                                <?php if ($timeAgo): ?>
+                                                    <span class="text-xs text-slate-400">• <?= htmlspecialchars($timeAgo) ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($isOwnReview): ?>
+                                                    <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">Your Review</span>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <?php if ($isOwnReview): ?>
+                                                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onclick="editReview(<?= $review->id_avis ?>, <?= $review->note ?>, '<?= htmlspecialchars(addslashes($review->texte), ENT_QUOTES) ?>')"
+                                                        class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-400 hover:text-primary transition-colors"
+                                                        title="Edit">
+                                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    </button>
+                                                    <form method="POST" action="../../Controllers/AvisController.php" class="inline">
+                                                        <input type="hidden" name="action" value="delete">
+                                                        <input type="hidden" name="id_avis" value="<?= $review->id_avis ?>">
+                                                        <button type="submit"
+                                                            class="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded text-slate-400 hover:text-red-500 transition-colors"
+                                                            title="Delete">
+                                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="flex text-yellow-500 text-sm mb-2">
-                                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                <?php if ($i <= $review->note): ?>
-                                                    <span class="material-symbols-outlined text-[18px] fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
-                                                <?php else: ?>
-                                                    <span class="material-symbols-outlined text-[18px] text-slate-300">star</span>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
+
+                                        <div class="review-display">
+                                            <div class="flex text-yellow-500 text-sm mb-2">
+                                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                    <?php if ($i <= $review->note): ?>
+                                                        <span class="material-symbols-outlined text-[18px] fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+                                                    <?php else: ?>
+                                                        <span class="material-symbols-outlined text-[18px] text-slate-300">star</span>
+                                                    <?php endif; ?>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                                                <?= nl2br(htmlspecialchars($review->texte ?? 'No review text provided.')) ?>
+                                            </p>
                                         </div>
-                                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-                                            <?= nl2br(htmlspecialchars($review->texte ?? 'No review text provided.')) ?>
-                                        </p>
+
+                                        <?php if ($isOwnReview): ?>
+                                            <form method="POST" action="../../Controllers/AvisController.php" class="review-edit hidden mt-3">
+                                                <input type="hidden" name="action" value="update">
+                                                <input type="hidden" name="id_avis" value="<?= $review->id_avis ?>">
+                                                <input type="hidden" name="note" class="edit-rating-input" value="<?= $review->note ?>">
+
+                                                <div class="flex text-yellow-500 text-sm mb-2 edit-star-rating">
+                                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                        <span class="material-symbols-outlined cursor-pointer text-[18px] <?= $i <= $review->note ? 'text-yellow-400' : 'text-slate-300' ?>"
+                                                            data-rating="<?= $i ?>"
+                                                            style="font-variation-settings: 'FILL' <?= $i <= $review->note ? 1 : 0 ?>;">star</span>
+                                                    <?php endfor; ?>
+                                                </div>
+
+                                                <textarea name="texte" required
+                                                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent resize-none mb-2"
+                                                    rows="3"><?= htmlspecialchars($review->texte) ?></textarea>
+
+                                                <div class="flex gap-2">
+                                                    <button type="submit" class="bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600">
+                                                        Save Changes
+                                                    </button>
+                                                    <button type="button" onclick="cancelEdit(<?= $review->id_avis ?>)"
+                                                        class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-300 dark:hover:bg-slate-600">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                         <?php
@@ -484,28 +540,65 @@ $badgeClass = getCategoryBadgeClass($car->nom ?? 'Other');
                 }
             });
         }
-        let reserverBtn = document.querySelector('#reserver');
-        reserverBtn.addEventListener('submit', () => {
-            let clientId = reserverBtn.dataset.clientId;
-            let carId = reserverBtn.dataset.carId;
-            window.location.href = './reserver.php?carId=' + carId + '&clientId=' + clientId;
-        })
 
-        function updateRatingText(rating) {
-            const ratingTexts = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
-            ratingText.textContent = `Rating: ${rating}/5 - ${ratingTexts[rating]}`;
-            ratingText.classList.remove('text-slate-400');
-            ratingText.classList.add('text-yellow-600');
+        function editReview(reviewId, currentNote, currentText) {
+            const reviewElement = document.getElementById('review-' + reviewId);
+            const displayElement = reviewElement.querySelector('.review-display');
+            const editForm = reviewElement.querySelector('.review-edit');
+
+            displayElement.classList.add('hidden');
+            editForm.classList.remove('hidden');
+
+            setupEditStarRating(reviewId, currentNote);
         }
 
-        document.getElementById('reviewForm').addEventListener('submit', function(e) {
-            if (currentRating === 0) {
-                e.preventDefault();
-                alert('Please select a star rating before submitting your review.');
-                ratingText.classList.add('text-red-500');
-                return false;
-            }
-        });
+        function cancelEdit(reviewId) {
+            const reviewElement = document.getElementById('review-' + reviewId);
+            const displayElement = reviewElement.querySelector('.review-display');
+            const editForm = reviewElement.querySelector('.review-edit');
+
+            displayElement.classList.remove('hidden');
+            editForm.classList.add('hidden');
+        }
+
+        function setupEditStarRating(reviewId, currentNote) {
+            const reviewElement = document.getElementById('review-' + reviewId);
+            const editStarContainer = reviewElement.querySelector('.edit-star-rating');
+            const editStars = editStarContainer.querySelectorAll('span');
+            const editRatingInput = reviewElement.querySelector('.edit-rating-input');
+            let editCurrentRating = currentNote;
+
+            editStars.forEach((star, index) => {
+                star.addEventListener('click', function() {
+                    editCurrentRating = parseInt(this.getAttribute('data-rating'));
+                    editRatingInput.value = editCurrentRating;
+                    updateEditStars(editStars, editCurrentRating);
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    const hoverRating = parseInt(this.getAttribute('data-rating'));
+                    updateEditStars(editStars, hoverRating);
+                });
+            });
+
+            editStarContainer.addEventListener('mouseleave', function() {
+                updateEditStars(editStars, editCurrentRating);
+            });
+        }
+
+        function updateEditStars(stars, rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('text-yellow-400');
+                    star.classList.remove('text-slate-300');
+                    star.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    star.classList.remove('text-yellow-400');
+                    star.classList.add('text-slate-300');
+                    star.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+        }
     </script>
 </body>
 
