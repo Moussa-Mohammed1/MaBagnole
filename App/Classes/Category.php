@@ -78,7 +78,7 @@ class Category
         ]);
     }
 
-    public function deleteCategory(int $id_category): void
+    public static function deleteCategory(int $id_category): void
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = 'DELETE FROM category WHERE id_category = :idc';
