@@ -7,6 +7,8 @@ use App\Classes\Avis;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? 'add';
     $role = trim($_POST['role_user']) ?? null;
+    $id_client = $_POST['id_client'];
+    $id_car = $_POST['id_car'];
     if ($role == 'client') {
         switch ($action) {
             case 'add':
@@ -20,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         exit();
                     }
 
-                    $avis = new Avis($note, $texte, $id_reservation);
+                    $avis = new Avis($id_client, $id_car, $note, $texte, $id_reservation);
                     $avis->addAvis();
                 }
                 header("Location: " . $_SERVER['HTTP_REFERER']);
